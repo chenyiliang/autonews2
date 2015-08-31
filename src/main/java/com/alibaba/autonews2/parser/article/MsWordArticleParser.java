@@ -22,6 +22,7 @@ import com.alibaba.autonews2.model.Paragraph;
 import com.alibaba.autonews2.model.Section;
 import com.alibaba.autonews2.model.Sentence;
 import com.alibaba.autonews2.regex.RegexPatternFactory;
+import com.alibaba.autonews2.segmenter.IKSegmentUtil;
 
 public class MsWordArticleParser implements ArticleParser {
 
@@ -198,7 +199,10 @@ public class MsWordArticleParser implements ArticleParser {
 			String[] split = paragraphStr.split("。");
 			for (int j = 0; j < split.length; j++) {
 				if (!split[j].trim().isEmpty()) {
-					sentences.add(new Sentence(split[j].trim() + "。"));
+					Sentence sentence = new Sentence(split[j].trim() + "。");
+					sentence.setTerms(IKSegmentUtil.split(sentence
+							.getSentence()));
+					sentences.add(sentence);
 				}
 			}
 			paragraphs.add(new Paragraph(sentences));

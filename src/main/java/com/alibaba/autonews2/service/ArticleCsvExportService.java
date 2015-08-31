@@ -1,7 +1,6 @@
 package com.alibaba.autonews2.service;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +11,7 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 
 import com.alibaba.autonews2.dao.ArticleDao;
+import com.alibaba.autonews2.format.DateFormatFactory;
 import com.alibaba.autonews2.model.Article;
 import com.alibaba.autonews2.model.Paragraph;
 import com.alibaba.autonews2.model.Section;
@@ -78,7 +78,8 @@ public class ArticleCsvExportService {
 		List<List<String>> recordsList = new ArrayList<List<String>>();
 
 		String title = article.getTitle();
-		String date = article.getPublishDate().toString();
+		String date = DateFormatFactory.getPubDateFormat().format(
+				article.getPublishDate());
 		oneRecordToList(recordsList, 0, title, date);// 写入Article.title,Article.date
 
 		List<Section> sections = article.getSectionList();
@@ -95,7 +96,8 @@ public class ArticleCsvExportService {
 				for (int k = 0; k < sentences.size(); k++) {
 					Sentence sentence = sentences.get(k);
 					String sentenceStr = sentence.getSentence();
-					oneRecordToList(recordsList, 4, sentenceStr);// 写入Section.subTitle
+					String terms = sentence.getTerms().toString();
+					oneRecordToList(recordsList, 4, sentenceStr, terms);// 写入Section.subTitle
 				}
 			}
 		}
